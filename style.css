@@ -7,7 +7,7 @@
 
 body {
     position: relative;
-    background-color: hsla(211, 36%, 92%, 1);
+    background-color: hsl(211,36%,92%);
 }
 
 main{
@@ -260,32 +260,52 @@ svg path {
 .forward, .backward {
     z-index: 1;
     position: absolute;
-    top: 45%;
+    top: 50%;
     left: 0;
     transform: translateY(-50%);
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 55%;
-    width: 28%;
+    height: 60px;
+    width: 60px;
     border: none;
-    border-radius: 20px;
+    border-radius: 50%;
     background: none;
+    /* background: rgba(243,243,243,0.3); */
+    opacity: .7;
     color: #ffffff;
-    transition: all .1s ease;
+    font-size: 0.6rem;
+    transition: all .2s linear;
 }
 .forward:active, .backward:active{
-    background: rgba(234,234,234,0.1);
-    color: rgba(255,255,255,0.8);
+    background: #4444dd;
+    opacity: .8;
+    font-size: 1rem;
 }
-
 .forward {
-    right: 10px;
+    /* right: 10px; */
+    right: 25px;
     left: auto;
 }
 .backward {
-    left: 10px;
+    /* left: 10px; */
+    left: 25px;
 }
+
+.forward svg, .backward svg {
+    height: 35px;
+    width: 35px;
+    transition: all .1s linear;
+}
+.forward svg path, .backward svg path {
+    fill: none;
+    stroke: #ffffff;
+}
+.forward:active svg, .backward:active svg {
+    height: 40px;
+    width: 40px;
+}
+
 
 
 .controls {
@@ -343,6 +363,7 @@ svg path {
 }
 
 .settings-container {
+    z-index: 1;
     position: absolute;
     right: 5px;
     right: 15px;
@@ -471,48 +492,62 @@ svg path {
 
 /* =========================*/
 /* ======= Fullscreen ======*/
-.video-container:fullscreen .controls {
-    height: 70px;
-    width: 98%;
-    padding: 10px 20px;
-    border-radius: 5px;
-}
-.video-container:fullscreen .time-line {
-    /* top: 40%; */
-    top: 50%;
-    /* left: 45%; */
-    left: 80px;
-    transform: translate(0%, -50%);
-    /* width: 70%; */
-    width: 55%;
-}
-.video-container:fullscreen .time-container {
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.8rem;
-}
+.video-container:fullscreen {
+    & .controls {
+        height: 70px;
+        width: 98%;
+        padding: 10px 20px;
+        border-radius: 5px;
+    }
+    
+    & .time-line {
+        top: 50%;
+        left: 80px;
+        transform: translate(0%, -50%);
+        width: 55%;
+    }
+    
+    & .time-container {
+        position: absolute;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.8rem;
+    }
 
-.video-container:fullscreen .settings,
-.video-container:fullscreen .mute {
-    display: flex;
-}
+    & .settings, .mute {
+        display: flex;
+    }
 
-.video-container:fullscreen .play-pause.big {
-    height: 100px;
-    width: 100px;
-}
+    & .play-pause.big {
+        height: 100px;
+        width: 100px;
+    }
 
-.video-container:fullscreen .time-container {
-    top: 50%;
-    right: 134px;
-    left: auto;
-    transform: translateY(-50%);
-    padding: 1px 7px;
-    background: hsl(240,10%,30%);
-    border-radius: 30px;
-    opacity: 0.8;
+    & .time-container {
+        top: 50%;
+        right: 134px;
+        left: auto;
+        transform: translateY(-50%);
+        padding: 1px 7px;
+        background: hsl(240,10%,30%);
+        border-radius: 30px;
+        opacity: 0.8;
+    }
+
+    & .forward, .backward {
+        height: 100px;
+        width: 100px;
+    }
+    & .forward {
+        right: 12%;
+    }
+    & .backward {
+        left: 12%;
+    }
+    
+    
+    
 }
 /* =========================*/
 /* =========================*/

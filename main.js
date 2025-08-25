@@ -52,16 +52,10 @@ const app = {
     },
 }
 
-console.log(video);
+console.log("video: ",video);
 let isSettingsHidden = true;
-let timingInterval;
 let autoHideControlsInterval;
-
-// For Test Only //
-let source_1 = "./videos/THE OLD KNIGHT/THE OLD KNIGHT_720P.mp4";
-let source_2 = "./videos/The Bread/The Bread_720P.mp4";
-let source_3 = "https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4";
-//////////////////
+let hideControlsTimeout;
 
 
 
@@ -84,29 +78,33 @@ function initVideo() {
     muteBtn.addEventListener("click", mute);
     // Time Line
     totalTime.textContent = timeFormater(video.duration);
+    video.addEventListener("timeupdate", updateVideoTimeLine);
     document.querySelectorAll(".playback-rate-container button").forEach((e)=>{
         e.addEventListener("click", changePlaybackRate);
     });
     timeLine.addEventListener("input", changeTimeLine);
     // Forward
-    forward.addEventListener("dblclick", ()=>{
+    forward.addEventListener("click", ()=>{
         video.currentTime = Math.min(video.currentTime + 10, video.duration); // time must be equal OR less than total time.
         updateVideoTimeLine();
     });
     // Backward
-    backward.addEventListener("dblclick", ()=>{
+    backward.addEventListener("click", ()=>{
         video.currentTime = Math.max(video.currentTime - 10, 0); // time must be equal to OR big than 0.
         updateVideoTimeLine();
     });
     // Settings
     settingsBtn.addEventListener("click", show_or_hide_settings);
     closeSettingsBtn.addEventListener("click", show_or_hide_settings);
-    // Hide Controls
+    // Clear Timeouts/Intervals If Previously Added
+    if (autoHideControlsInterval) clearInterval(autoHideControlsInterval);
+    if (hideControlsTimeout) clearTimeout(hideControlsTimeout);
+    // Hide Controls, Add New Intervals
     video.addEventListener("click", hideControls);
     autoHideControlsInterval = setInterval(autoHideControls, 3000);
     videoContainer.addEventListener("click", ()=>{
-        // Rest Check Timer For Auto Hide
-        if (autoHideControlsInterval !== undefined) { clearInterval(autoHideControlsInterval); }
+        // Reset Check Timer For Auto Hide
+        if (autoHideControlsInterval) { clearInterval(autoHideControlsInterval); }
         autoHideControlsInterval = setInterval(autoHideControls, 3000);
     });
     // Lock, Unlock Controls
@@ -142,20 +140,15 @@ function playPause() {
     if (video.paused) {
         video.play();
         updatePlayPauseUI("pause");
-        timingInterval = setInterval(updateVideoTimeLine, 500);
     }
     else {
         video.pause();
         updatePlayPauseUI("play");
-        if (timingInterval != undefined) {
-            clearInterval(timingInterval);
-        }
     }
 }
 
 function videoEnded() {
     updatePlayPauseUI("reload");
-    if (timingInterval != undefined) { clearInterval(timingInterval); }
     app.screenState.active = false;
     hideControls();
 }
@@ -202,24 +195,22 @@ function changeTimeLine() {
     video.currentTime = (timeLine.value / 100) * video.duration;
     currentTime.textContent = timeFormater(video.currentTime);
     timeLine.style.setProperty("--range-value", timeLine.value + "%");
-    // Rest Check Timer For Auto Hide
-    if (autoHideControlsInterval !== undefined) {
-        clearInterval(autoHideControlsInterval);
-    }
+    // Reset Check Timer For Auto Hide
+    if (autoHideControlsInterval) clearInterval(autoHideControlsInterval);
     autoHideControlsInterval = setInterval(autoHideControls, 3000);
 }
 
 
-function timeFormater(tiemInSeconds) {
-    tiemInSeconds = tiemInSeconds || 0;
-    if (isNaN(parseInt(tiemInSeconds))) return;
+function timeFormater(timeInSeconds) {
+    timeInSeconds = timeInSeconds || 0;
+    if (isNaN(parseInt(timeInSeconds))) return;
     
     let maxTime = video.duration;
     let result = "00:00:00";
     
-    let hours = Math.floor(tiemInSeconds / 3600); // 1 hour = 3600 second.
-    let minutes = Math.floor((tiemInSeconds % 3600) / 60); // (time remains from hour in seconds divided by 60 to convert it to minutes).
-    let seconds = Math.floor(tiemInSeconds % 60); // Example: (65 % 60) =>  division result is 1 (minutes) and remains 5 (seconds).
+    let hours = Math.floor(timeInSeconds / 3600); // 1 hour = 3600 second.
+    let minutes = Math.floor((timeInSeconds % 3600) / 60); // (time remains from hour in seconds divided by 60 to convert it to minutes).
+    let seconds = Math.floor(timeInSeconds % 60); // Example: (65 % 60) =>  division result is 1 (minutes) and remains 5 (seconds).
     
     let hh = String(hours);
     let ss = String(seconds).padStart(2, "0"); // 1 => 01
@@ -232,7 +223,7 @@ function timeFormater(tiemInSeconds) {
         result = `${mm}:${ss}`;
     }
     else { // time is only seconds
-        result = `${ss}`;
+        result = `00:${ss}`;
     }
     return result;
 }
@@ -253,7 +244,10 @@ function show_or_hide_settings() {
 
 // Click To Hide
 function hideControls() {
-    setTimeout(()=>{
+    // Reset Timeout
+    if (hideControlsTimeout) clearTimeout(hideControlsTimeout);
+    // Add New Timeout, To feel like animation.
+    hideControlsTimeout = setTimeout(()=>{
         // Hide (screen is locked)
         if (app.screenState.active && app.screenState.locked) {
             app.screenState.active = false;
@@ -351,9 +345,7 @@ function fullscreen() {
             videoContainer.msRequestFullscreen();
         }
     }
-    changeScreenOrientation();
 }
-
 
 
 function changeScreenOrientation() {
@@ -362,19 +354,24 @@ function changeScreenOrientation() {
         app.screenState.landscape = true;
         app.screenState.portrait = false;
         // code for (rotate elements).
-        screen.orientation.lock("landscape")
-        .then(()=>{ console.log("Screen locked to landscape"); })
-        .catch((err)=>{ console.error("Lock failed:",err); });
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock("landscape")
+                .then(()=>{ console.log("Screen locked to landscape"); })
+                .catch((err)=>{ console.error("Lock failed:",err); });
+        }
     }
     // portrait Mode.
     else {
         app.screenState.landscape = false;
         app.screenState.portrait = true;
         // code for (normal direction).
-        screen.orientation.unlock();
-        console.log("Screen unlocked (act system orientation)");
+        if (screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock();
+            console.log("Screen unlocked (act system orientation)");
+        }
     }
 }
+document.addEventListener("fullscreenchange", changeScreenOrientation);
 
 
 
@@ -390,16 +387,17 @@ function ChangeVideoURL() {
     video.src = videoURL.value; // Change Video Source.
     video.load(); // reset video element.
     updatePlayPauseUI("play"); // Display (Play) Button As Initial Control.
+     // Assuming An Error Occurs After a few seconds If NO (Error) And No (metadata loaded)
     let checkVideoStateTimeout = setTimeout(function() {
         showMessage("Error Occurs Video Not Loaded!");
-        restVideoElement();
-    }, 5000);
+        resetVideoElement();
+    }, 10000);
     // If Video Have An Error Stop Function:
     video.onerror = ()=>{
         console.log("video.error:", video.error);
         clearTimeout(checkVideoStateTimeout);
         showMessage("Error Occurs Video Not Loaded!");
-        restVideoElement();
+        resetVideoElement();
     }
     // If Video Loaded:
     video.onloadedmetadata = ()=>{
@@ -415,17 +413,15 @@ function ChangeVideoURL() {
                 hideControls();
                 timeLine.value = 0;
                 timeLine.style.setProperty("--range-value", timeLine.value + "%");
-                updateVideoTimeLine();
-                // showMessage("Video Loaded Successfully!");
             }
             // If Video Loaded But Don't Work:
             else {
                 showMessage("Video Not Found!");
-                restVideoElement();
+                resetVideoElement();
             }
         }, 1000);
     }
-    function restVideoElement() {
+    function resetVideoElement() {
         URLContainer.classList.remove("animation-loading-url");
         videoContainer.style.display = "none";
         timeLine.value = 0;
@@ -439,8 +435,7 @@ function ChangeVideoURL() {
 getURLBtn?.addEventListener("click", ChangeVideoURL);
 // For Test only
 // videoURL.value = "./videos/THE OLD KNIGHT/THE OLD KNIGHT_720P.mp4";
-
-
+// videoURL.value = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4";
 
 
 
@@ -448,7 +443,5 @@ function showMessage(msg) {
     URLContainer.classList.remove("animation-loading-url");
     videoContainer.style.display = "none";
     videoContainerLoading.textContent = msg;
-    console.log(msg);
-    // Show Element With HTML, CSS, JS
 }
 
