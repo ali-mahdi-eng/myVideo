@@ -12,16 +12,14 @@ GitHub: [Project Repository](https://github.com/ali-mahdi-eng/myVideo) and [Live
 - [ ] control video volume level (control bar).
 - [ ] Use web sites url to display video which inside page.(currently this like impossible as Front-End it neet backend, make it possible)
 - [ ] make this website as browser extension will fix can't get video url, browser let extension inject JavaScript code in any opened website in browser, so getting url or the video is super easy.
-- 
-- 
+
 
 
 
 ---
 
 ## 🐞Bugs
-- 
--
+
 #### [0.2.1]
 - [x] autoHide controls time [3s] => [5s]
 - [x] Some control elements have wrong order "z-index" like (palyback-rate container).
@@ -36,8 +34,7 @@ GitHub: [Project Repository](https://github.com/ali-mahdi-eng/myVideo) and [Live
 ---
 
 ## ✅ Completed
-- 
-- 
+
 #### [0.2.0]
 - [x] prevent default behaviour of long press on video (display download video button)
 - [x] Support PWA (now app can be installing).
@@ -58,8 +55,7 @@ GitHub: [Project Repository](https://github.com/ali-mahdi-eng/myVideo) and [Live
 8. lazy loading screen when loading video data from url, So you will not feel bored video loading.
 9. Support PWA (now app can be installed on desktop or home screen).
 10. Auto Hide controls time [5 seconds]
-11. 
-12. 
+    
 
 
 
