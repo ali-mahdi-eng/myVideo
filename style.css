@@ -19,8 +19,7 @@ main{
 
 .url-container {
     position: absolute;
-    /* top: 10%; */
-    top: 15%;
+    top: 20%;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -185,8 +184,7 @@ svg path {
 .video-container, .video-container-loading {
     aspect-ratio: 16 / 9; /* Maintains 16:9 ratio */
     position: relative;
-    /* top: 250px; */
-    top: 300px;
+    top: 250px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -229,12 +227,15 @@ svg path {
     color: #ddd;
 }
 
+/* Video */
 .video-container video {
+    z-index: 1;
     aspect-ratio: 16 / 9;
     width: 100%;
 }
 
 .play-pause.big {
+    z-index: 4;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -260,7 +261,7 @@ svg path {
 
 
 .forward, .backward {
-    z-index: 1;
+    z-index: 2;
     position: absolute;
     top: 50%;
     left: 0;
@@ -311,7 +312,7 @@ svg path {
 
 
 .controls {
-    z-index: 2;
+    z-index: 3;
     position: absolute;
     bottom: 0;
     left: 50%;
@@ -366,7 +367,7 @@ svg path {
 }
 
 .settings-container {
-    z-index: 3;
+    z-index: 5;
     position: absolute;
     right: 5px;
     right: 15px;
@@ -414,6 +415,7 @@ svg path {
 
 
 .unlock-screen {
+    z-index: 7;
     position: absolute;
     bottom: 50px;
     left: 50%;
@@ -443,7 +445,7 @@ svg path {
 
 
 .playback-rate-container {
-    z-index: 5;
+    z-index: 6;
     position: absolute;
     top: 50%;
     right: 5px;

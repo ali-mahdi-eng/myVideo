@@ -101,11 +101,11 @@ function initVideo() {
     if (hideControlsTimeout) clearTimeout(hideControlsTimeout);
     // Hide Controls, Add New Intervals
     video.addEventListener("click", hideControls);
-    autoHideControlsInterval = setInterval(autoHideControls, 3000);
+    autoHideControlsInterval = setInterval(autoHideControls, 5000);
     videoContainer.addEventListener("click", ()=>{
         // Reset Check Timer For Auto Hide
         if (autoHideControlsInterval) { clearInterval(autoHideControlsInterval); }
-        autoHideControlsInterval = setInterval(autoHideControls, 3000);
+        autoHideControlsInterval = setInterval(autoHideControls, 5000);
     });
     // Lock, Unlock Controls
     lockScreenBtn.addEventListener("click", lockScreen)
@@ -197,7 +197,7 @@ function changeTimeLine() {
     timeLine.style.setProperty("--range-value", timeLine.value + "%");
     // Reset Check Timer For Auto Hide
     if (autoHideControlsInterval) clearInterval(autoHideControlsInterval);
-    autoHideControlsInterval = setInterval(autoHideControls, 3000);
+    autoHideControlsInterval = setInterval(autoHideControls, 5000);
 }
 
 
@@ -434,8 +434,7 @@ function ChangeVideoURL() {
 }
 getURLBtn?.addEventListener("click", ChangeVideoURL);
 // For Test only
-// videoURL.value = "./videos/THE OLD KNIGHT/THE OLD KNIGHT_720P.mp4";
-// videoURL.value = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4";
+videoURL.value = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4";
 
 
 
